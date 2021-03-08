@@ -1,0 +1,16 @@
+{
+  "name": "serial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "buildrun": "parcel build index.js --target node; node dist/index.js"
+  },
+  "dependencies": {
+    "serialport": "^9.0.7",
+    "ws": "^7.4.4"
+  },
+  "devDependencies": {
+    "parcel": "1.12.3"
+  }
+}
