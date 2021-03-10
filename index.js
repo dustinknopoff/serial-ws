@@ -2,7 +2,7 @@ import SerialPort from "serialport"
 const Readline = require('@serialport/parser-readline')
 import WebSocket from "ws"
 const server = new WebSocket.Server({ port: 8080 });
-const port = new SerialPort('insert your serial /dev/...', {
+const port = new SerialPort('/dev/tty.usbserial-14510', {
     baudRate: 9600
 })
 
