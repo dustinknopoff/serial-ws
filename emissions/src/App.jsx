@@ -25,42 +25,28 @@ const initialGuessState = {
 
 function App() {
   const [index, setIndex] = useState(0);
-  const [isCollective, setType] = useState("personal");
-  const [data] = socketManager();
+  const [data, quizType] = socketManager();
   const [guesses, setGuesses] = useState(initialGuessState);
   // console.log(guesses);
   return (
     <div className="gentle-flex container">
       <div>
-        <button
-          className={`type-toggle left ${
-            isCollective === "personal" ? "active" : ""
-          }`}
-          onClick={() => setType("personal")}
-        >
-          <User
-            className="svg-image"
-            color={isCollective === "collective" ? "darkgray" : "black"}
-          />
-          Individual
-        </button>
-        <button
-          className={`type-toggle right ${
-            isCollective === "collective" ? "active" : ""
-          }`}
-          onClick={() => setType("collective")}
-        >
-          <Globe
-            className="svg-image"
-            color={isCollective === "personal" ? "darkgray" : "black"}
-          />
-          Collective
-        </button>
+        {quizType === "personal" ? (
+          <button className={`type-toggle active`}>
+            <User className="svg-image" color={"black"} />
+            Individual
+          </button>
+        ) : (
+          <button className={`type-toggle active`}>
+            <Globe className="svg-image" color={"black"} />
+            Collective
+          </button>
+        )}
       </div>
       <SlidesDisplay
         slide={slides[index]}
         indexChanger={setIndex}
-        isCollective={isCollective}
+        isCollective={quizType}
         data={data}
         setGuess={setGuesses}
         guesses={guesses}
