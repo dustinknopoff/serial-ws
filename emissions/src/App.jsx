@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { socketManager } from "./socketManager";
 import { slides } from "./slides";
 import { SlidesDisplay } from "./slidesDisplay";
@@ -7,27 +7,30 @@ import Globe from "./globe.jsx";
 import User from "./user.jsx";
 
 const initialGuessState = {
-  personal: {
-    residential: 0,
-    commercial: 0,
-    industry: 0,
-    "electricity generation": 0,
-    transportation: 0,
-  },
   collective: {
-    residential: 0,
-    commercial: 0,
-    industry: 0,
-    "electricity generation": 0,
+    agriculture: 0,
     transportation: 0,
+    "commercial, industry, residential": 0,
+    "electricity generation": 0,
+  },
+  personal: {
+    transportation: 0,
+    "electricity generation": 0,
+    "gas, fuel oil, and propane": 0,
+    agriculture: 0,
   },
 };
 
 function App() {
   const [index, setIndex] = useState(0);
   const [data, quizType] = socketManager();
-  const [guesses, setGuesses] = useState(initialGuessState);
-  // console.log(guesses);
+  const [guesses, setGuesses] = useState(initialGuessState[quizType]);
+
+  useEffect(() => {
+    setIndex(0);
+    setGuesses(initialGuessState[quizType]);
+  }, [quizType]);
+
   return (
     <div className="gentle-flex container">
       <div>
@@ -46,7 +49,7 @@ function App() {
       <SlidesDisplay
         slide={slides[index]}
         indexChanger={setIndex}
-        isCollective={quizType}
+        quizType={quizType}
         data={data}
         setGuess={setGuesses}
         guesses={guesses}
@@ -56,5 +59,3 @@ function App() {
 }
 
 export default App;
-
-//<span>Count: {Math.trunc(data)}</span>

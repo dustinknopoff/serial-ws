@@ -2,16 +2,17 @@ import React, { useEffect } from "react";
 import "./App.css";
 import mic from "./mic.svg";
 import { motion, useAnimation } from "framer-motion";
+import { Results } from "./Results";
 
 export function SlidesDisplay({
   slide,
   indexChanger,
-  isCollective,
+  quizType,
   data,
   setGuess,
   guesses,
 }) {
-  const typeQ = isCollective === "collective" ? "U.S." : "your";
+  const typeQ = quizType === "collective" ? "U.S." : "your";
   const controls = useAnimation();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function SlidesDisplay({
         <motion.div animate={{ scale: 2 }}>
           <button
             className="onlyText"
-            onClick={() => indexChanger((idx) => idx + 1)}
+            onClick={() => indexChanger((current) => current + 1)}
           >
             {slide.text}
           </button>
@@ -49,7 +50,9 @@ export function SlidesDisplay({
         <motion.div animate={controls} variants={variants}>
           <h1 className="h1">
             What percent of <b className="type-q">{typeQ}</b> emissions are
-            caused by <i className="category">{slide.category}</i> production?
+            caused by{" "}
+            <i className="category">{slide.personalCat || slide.category}</i>{" "}
+            production?
           </h1>
         </motion.div>
         <div className="microphone">
@@ -79,10 +82,10 @@ export function SlidesDisplay({
             className="submit"
             onClick={() => {
               setGuess((guesses) => {
-                guesses[isCollective][slide.category] = data;
+                guesses[slide.personalCat || slide.category] = data;
                 return guesses;
               });
-              indexChanger((idx) => idx + 1);
+              indexChanger((current) => current + 1);
             }}
           >
             OK
@@ -92,8 +95,8 @@ export function SlidesDisplay({
     );
   }
 
-  if (slide.results) {
-    <pre></pre>;
+  if (slide.final) {
+    return <Results guesses={guesses} quizType={quizType} />;
   }
 
   return <p>Nothing</p>;

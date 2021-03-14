@@ -58,6 +58,7 @@ button {
 
 h1 {
   font-size: 2vw;
+  max-width: 640px;
 }
 
 .microphone {
@@ -107,4 +108,19 @@ h1 {
 
 .category {
   color: darkorange;
+}
+
+.higher {
+  color: darkred;
+  font-weight: 700;
+}
+
+.lower {
+  color: darkgreen;
+  font-weight: 700;
+}
+
+.equal {
+  color: aquamarine;
+  font-weight: 700;
 }
