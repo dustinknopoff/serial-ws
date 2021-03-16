@@ -14,6 +14,7 @@ export function SlidesDisplay({
 }) {
   const typeQ = quizType === "collective" ? "U.S." : "your";
   const controls = useAnimation();
+  const [countdown, setCountdown] = React.useState(4);
 
   useEffect(() => {
     controls.start({
@@ -25,18 +26,38 @@ export function SlidesDisplay({
         damping: 80,
       },
     });
+    setCountdown(4);
   }, [slide]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (countdown > 0) setCountdown((c) => c - 1);
+      console.log(countdown);
+    }, 1000);
+
+    if (countdown === 0) {
+      if (slide.text) {
+        indexChanger((current) => current + 1);
+      }
+      if (slide.question) {
+        setGuess((guesses) => {
+          guesses[slide.personalCat || slide.category] = data;
+          return guesses;
+        });
+        indexChanger((current) => current + 1);
+      }
+    }
+  }, [countdown]);
 
   if (slide.text) {
     return (
       <React.Fragment>
         <motion.div animate={{ scale: 2 }}>
-          <button
-            className="onlyText"
-            onClick={() => indexChanger((current) => current + 1)}
-          >
-            {slide.text}
-          </button>
+          {countdown === 4 && <span className="onlyText">Ready?</span>}
+          {countdown === 1 && <span className="onlyText">{slide.text}</span>}
+          {countdown < 4 && countdown > 1 && (
+            <span className="onlyText">{countdown}</span>
+          )}
         </motion.div>
         <div />
       </React.Fragment>
@@ -57,7 +78,7 @@ export function SlidesDisplay({
         </motion.div>
         <div className="microphone">
           <label htmlFor="mic">
-            Blow or yell into the microphone to make a guess
+            Start Yelling! Your guess will be captured in {countdown} seconds
           </label>
           <div style={{ display: "flex", alignItems: "flex-end" }}>
             <span
@@ -78,17 +99,9 @@ export function SlidesDisplay({
               <span className="percentCount">{Math.trunc(data)}%</span>
             </div>
           </div>
-          <button
-            className="submit"
-            onClick={() => {
-              setGuess((guesses) => {
-                guesses[slide.personalCat || slide.category] = data;
-                return guesses;
-              });
-              indexChanger((current) => current + 1);
-            }}
-          >
-            OK
+          <button className={countdown === 1 ? "submit active" : "submit"}>
+            {countdown === 1 && "Captured"}
+            {countdown > 1 && countdown}
           </button>
         </div>
       </React.Fragment>

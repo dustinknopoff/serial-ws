@@ -10,22 +10,12 @@ import { Doughnut } from "react-chartjs-2";
  * @returns ReactElement
  */
 export function Pie({ width, height, dataset, labels }) {
-  //   const canvasRef = useRef();
-  const [data, setData] = React.useState([]);
-
-  useEffect(() => {
-    console.log("fire!");
-    if (!arraysEqual(data, dataset)) {
-      setData(() => dataset);
-    }
-  }, [dataset]);
-
   return (
     <Doughnut
       data={{
         datasets: [
           {
-            data,
+            data: dataset,
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",

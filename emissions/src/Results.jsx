@@ -12,20 +12,25 @@ export function Results({ guesses, quizType }) {
 
   const [index, setIndex] = React.useState(-1);
   const [shownDiffs, setShown] = React.useState([]);
-  const [dataset, setDataset] = React.useState(
-    Object.keys(guesses).map((cat) => guesses[cat])
+  const dataset = React.useMemo(
+    () => Object.keys(guesses).map((cat) => guesses[cat]),
+    [guesses]
   );
+
+  useEffect(() => {
+    Array.from(document.getElementsByClassName("container")).forEach((el) =>
+      el.classList.add("results")
+    );
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
       if (index + 1 < diffs.length) {
-        setDataset((d) => {
-          let keys = Object.keys(realValues[quizType]);
-          d.splice(index + 1, 1, realValues[quizType][keys[index + 1]]);
-          return d;
-        });
         setShown((existing) => [...existing, diffs[index + 1]]);
         setIndex((i) => i + 1);
+      }
+      if (index + 1 == diffs.length) {
+        document.getElementById("realPie").scrollIntoView();
       }
     }, 1000);
   }, [index]);
@@ -35,34 +40,60 @@ export function Results({ guesses, quizType }) {
   }, [dataset]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-      }}
-    >
+    <div>
+      <h1 style={{ textAlign: "center" }}>Your Guesses</h1>
       <div
         style={{
-          height: "70vh",
-          width: "70%",
-          position: "relative",
+          width: "100%",
+          display: "flex",
         }}
       >
-        <Pie labels={labels} dataset={dataset} />
+        <div
+          style={{
+            height: "70vh",
+            width: "70%",
+            position: "relative",
+          }}
+        >
+          <Pie labels={labels} dataset={dataset} />
+        </div>
+        <motion.ul
+          initial="hidden"
+          animate="visible"
+          variants={list}
+          style={{ listStyle: "none" }}
+        >
+          {shownDiffs.map(([key, diff, upDown]) => (
+            <motion.li key={key} variants={item} style={{ margin: "10px" }}>
+              {key} is <b>{diff}%</b> <span className={upDown}>{upDown}</span>{" "}
+              on average
+            </motion.li>
+          ))}
+        </motion.ul>
       </div>
-      <motion.ul
-        initial="hidden"
-        animate="visible"
-        variants={list}
-        style={{ listStyle: "none" }}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+        }}
       >
-        {shownDiffs.map(([key, diff, upDown]) => (
-          <motion.li key={key} variants={item} style={{ margin: "10px" }}>
-            {key} is <b>{diff}%</b> <span className={upDown}>{upDown}</span> on
-            average
-          </motion.li>
-        ))}
-      </motion.ul>
+        <h1>Breakdown from EPA</h1>
+        <div
+          style={{
+            height: "70vh",
+            width: "70%",
+            position: "relative",
+          }}
+          id={"realPie"}
+        >
+          <Pie
+            labels={labels}
+            dataset={Object.keys(realValues[quizType]).map(
+              (cat) => realValues[quizType][cat]
+            )}
+          />
+        </div>
+      </div>
     </div>
   );
 }
